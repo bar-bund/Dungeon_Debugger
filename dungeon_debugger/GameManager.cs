@@ -37,7 +37,7 @@ namespace dungeon_debugger
                 PrintMap();
                 Console.WriteLine("Choose a direction: Left or Right (or Quit to exit)");
                 string choice = Console.ReadLine()?.ToLower();
-
+                
                 switch (choice)
                 {
                     case "left":
@@ -55,7 +55,7 @@ namespace dungeon_debugger
                         break;
                 }
             }
-
+            // Game over
             if (CurrentPlayer.Health <= 0)
             {
                 Console.WriteLine("You have perished on your journey. Game over.");
