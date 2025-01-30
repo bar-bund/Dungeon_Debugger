@@ -94,20 +94,5 @@ namespace dungeon_debugger
                 "⠀⠀⠀⠀⠈⠉⠛⠻⠿⢷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡾⠿⠟⠛⠉⠁⠀⠀⠀⠀\r\n" +
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n");
         }
-
-        public static void DisplayVial()
-        {
-            Console.WriteLine("");
-        }
-
-        public static void DisplayBandage()
-        {
-            Console.WriteLine("");
-        }
-
-        public static void DisplayShield()
-        {
-            Console.WriteLine("");
-        }
     }
 }
