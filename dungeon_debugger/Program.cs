@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace TextBasedGame
 {
+    // Main program
     class Program
     {
         static void Main(string[] args)
