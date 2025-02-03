@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace dungeon_debugger
@@ -19,6 +15,9 @@ namespace dungeon_debugger
         public Player CurrentPlayer { get; set; }
         private int PlayerPosition { get; set; } = 5;
         private const int MapSize = 10;
+
+        // ??????? Maybe
+        Random random = new Random();
 
 
 
@@ -72,7 +71,8 @@ namespace dungeon_debugger
             // Game over
             if (CurrentPlayer.Health <= 0)
             {
-                Console.WriteLine("You have perished on your journey. Game over.");
+                Console.WriteLine("You have perished on your journey. Game over...");
+                isRunning = false; // Exit game loop
             }
         }
 
@@ -82,15 +82,21 @@ namespace dungeon_debugger
         private void HandleEncounter(int direction)
         {
             MovePlayer(direction);
-            Random random = new Random();
             int randomNr = random.Next(1, 5); // Generate random nr. between 1-4
 
             // 75% chance of getting attacked (randomNr = 1, 2, or 3)
             if (randomNr <= 3)
             {
                 Console.WriteLine("A hostile enemy appears!");
-                Enemy enemy = new Enemy("Goblin", 10);
+
+                // Array of different enemy types
+                Character[] enemyTypes = { new Bug(), 
+                                           new Serpent(), 
+                                           new Ogre() };
+                Character enemy = enemyTypes[random.Next(enemyTypes.Length)];
+
                 Battle(enemy);
+
             }
             // 25% chance of getting a safe bonfire (randomNr = 4)
             else
@@ -161,55 +167,80 @@ namespace dungeon_debugger
 
 
 
-        // Handles combat between player and enemy
-        private void Battle(Enemy enemy)
+        // Handles combat
+        private void Battle(Character enemy)
         {
             Console.WriteLine($"You encounter a {enemy.Name} with {enemy.Health} health!");
 
-            // Enemy may drop an item upon defeat
-            Item droppedItem = enemy.DropItem();
-            if (droppedItem != null)
-            {
-                CurrentPlayer.AddToInventory(droppedItem);
-            }
-
             while (enemy.Health > 0 && CurrentPlayer.Health > 0)
             {
-                Console.WriteLine("Choose an action: Attack or Run?");
-                string action = Console.ReadLine()?.ToLower();
+                Console.WriteLine("Choose an action:\n" +
+                                  "1: Attack\n" +
+                                  "2: Run\n" +
+                                  "3: Inventory?\n");
 
-                if (action == "attack")
-                {
-                    int damage = CurrentPlayer.Attack(droppedItem); // Player attacks
-                    enemy.Health -= damage;
-                    Console.WriteLine($"You dealt {damage} damage to the {enemy.Name}.");
+                int action = Convert.ToInt32(Console.ReadLine());
 
-                    if (enemy.Health > 0)
-                    {
-                        int enemyDamage = enemy.Attack(); // Enemy counterattacks
-                        CurrentPlayer.Health -= enemyDamage;
-                        Console.WriteLine($"The {enemy.Name} dealt {enemyDamage} damage to you.");
-                    }
-                }
-                else if (action == "run")
+                // ???????? MAYBE
+                if (!int.TryParse(Console.ReadLine(), out action))
                 {
-                    Console.WriteLine("You fled the battle!");
-                    break; // Exits battle loop
+                    Console.WriteLine("Invalid input. Please enter a number between 1 and 3.");
+                    continue;
                 }
-                else
+
+                switch (action)
                 {
-                    Console.WriteLine("Invalid action. Try again.");
+                    case 1: // Attack
+                        int damage = CurrentPlayer.Attack(); // Player attacks
+                        enemy.Health -= damage;
+                        Console.WriteLine($"You dealt {damage} damage to the {enemy.Name}!");
+                        
+                        if (enemy.Health > 0)
+                        {
+                            int enemyDamage = enemy.Attack(); // Enemy counterattacks
+                            CurrentPlayer.Health -= enemyDamage;
+                            Console.WriteLine($"The {enemy.Name} dealt {enemyDamage} damage to you!");
+                        }
+                        break;
+
+                    case 2: // Run
+                        if (random.Next(2) == 0) // 0 or 1, so 50/50 chance
+                        {
+                            Console.WriteLine("You fled the battle!");
+                            return; // Break out of the method
+                        }
+                        else
+                        {
+                            Console.WriteLine("You failed to flee! The enemy caught you!");
+                            break; // Continue the battle
+                        }
+
+                    case 3: // Check Inventory
+                        Console.WriteLine("Checking your inventory...");
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid action. Please choose a valid option (1-3).");
+                        break;
                 }
             }
+
 
             if (CurrentPlayer.Health <= 0)
             {
-                Console.WriteLine("You have been defeated. Game over.");
+                Console.WriteLine("You have been defeated in battle...");
             }
             else if (enemy.Health <= 0)
             {
                 Console.WriteLine($"You defeated the {enemy.Name}!");
+                Item droppedItem = enemy.DropItem();
+                if (droppedItem != null)
+                {
+                    CurrentPlayer.AddToInventory(droppedItem);
+                }
             }
+
+            GameLoop();
         }
     }
 }

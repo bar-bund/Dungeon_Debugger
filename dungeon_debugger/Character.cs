@@ -1,10 +1,7 @@
-﻿namespace dungeon_debugger;
+﻿using System;
 
 namespace dungeon_debugger
 {
-
-
-
     // Base class for characters
     public class Character
     {
@@ -24,10 +21,8 @@ namespace dungeon_debugger
     // Player class - inherits from Character
     public class Player : Character
     {
-        // List to store collected items
+        // Item list
         private List<Item> Inventory { get; set; }
-
-
 
         // Constructor: Initializes player with a name and 100 health
         public Player(string name) : base(name, 100)
@@ -36,21 +31,10 @@ namespace dungeon_debugger
         }
 
 
-
         // Method for attacking an enemy, with optional item effects
-        public int Attack(Item item)
+        public int Attack()
         {
-            Random random = new Random();
-            int baseDamage = random.Next(5, 15);
-
-
-            // Checks if the player is using a Vial, which boosts attack damage
-            if (item is Vial)
-            {
-                baseDamage += ((Vial)item).DamageBoost; // Adds extra damage from Vial
-                Console.WriteLine("The Vial boosts your attack damage!");
-            }
-
+            int baseDamage = 25;
             return baseDamage; // Returns final attack damage
         }
 
@@ -87,6 +71,7 @@ namespace dungeon_debugger
         }
 
 
+        // Method to use an item in inventory
         public void UseItem()
         {
 
@@ -95,19 +80,16 @@ namespace dungeon_debugger
 
 
 
-    // Enemy class - inherits from Character
-    public class Enemy : Character
-    {
-        private static Random random = new Random();
-        public Enemy(string name, int health) : base(name, health) { }
 
-        // Method to perform an attack
+    public class Bug : Character
+    {
+        public Bug() : base("Buggy Bug", 75) { }
+
         public int Attack()
         {
-            return random.Next(5, 10);
+            return 15;
         }
 
-        // Method to determine if the enemy drops an item
         public Item DropItem()
         {
             // List of items that an enemy can drop
@@ -119,6 +101,8 @@ namespace dungeon_debugger
             };
 
             // 50% chance of dropping an item
+            private static Random random = new Random();
+
             if (random.Next(2) == 0)
             {
                 // Selects a random item from the list
@@ -126,25 +110,42 @@ namespace dungeon_debugger
                 Console.WriteLine($"The {Name} dropped a {droppedItem.Name}!");
                 return droppedItem;
             }
-
             return null; // Returns null if no item is dropped
         }
     }
 
 
-    public class Bug : Enemy
-    {
 
+
+    public class Serpent : Character
+    {
+        public Serpent() : base("Syntax Serpent", 100) { }
+
+        public int Attack()
+        {
+            return 25;
+        }
     }
 
-    public class Serpent : Enemy
-    {
 
+
+
+    public class Ogre : Character
+    {
+        public Ogre() : base("OutOfBounds Ogre", 150) { }
+
+        public int Attack()
+        {
+            return 35;
+        }
     }
 
-    public class Ogre : Enemy
+
+
+    // Enemy class - inherits from Character
+    public class Enemy : Character
     {
-
+        private static Random random = new Random();
+        public Enemy(string name, int health) : base(name, health) { }
     }
-
 }

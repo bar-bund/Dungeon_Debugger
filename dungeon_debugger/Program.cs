@@ -1,8 +1,6 @@
-﻿using dungeon_debugger;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
-namespace TextBasedGame
+namespace dungeon_debugger
 {
     // Main program
     class Program
