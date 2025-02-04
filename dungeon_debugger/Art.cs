@@ -168,5 +168,12 @@ namespace dungeon_debugger
                               "          `'{_            )              \r\n" +
                               "              ^^\\..___,.--`             \r\n");
         }
+
+
+        public static void DisplayBandaid()
+        {
+            Console.WriteLine();
+        }
+
     }
 }

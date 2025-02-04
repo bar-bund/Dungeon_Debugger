@@ -1,8 +1,13 @@
 ﻿using System;
 
+// Class that holds the Character classes - Player and Enemies.
+// Includes the methods of the different characters.
+
+
 namespace dungeon_debugger
 {
-    // Base class for characters
+    // Base class
+    // Character
     public class Character
     {
         public string Name { get; set; }
@@ -16,7 +21,8 @@ namespace dungeon_debugger
     }
 
 
-    // Player class - inherits from Character
+    // Sub class
+    // Player : Character
     public class Player : Character
     {
         // Item list
@@ -76,6 +82,9 @@ namespace dungeon_debugger
         }
     }
 
+
+    // Sub class
+    // Enemy : Character
     public abstract class Enemy : Character
     {
         public Art.EnemyType Type { get; private set; }
@@ -144,7 +153,8 @@ namespace dungeon_debugger
     }
 
 
-
+    // Sub sub class
+    // Bug : Enemy
     public class Bug : Enemy
     {
         public Bug() : base(Art.EnemyType.Bug, "Buggy Bug", 75) { }
@@ -168,6 +178,8 @@ namespace dungeon_debugger
     }
 
 
+    // Sub sub class
+    // Serpent : Enemy
     public class Serpent : Enemy
     {
         public Serpent() : base(Art.EnemyType.Serpent, "Syntax Serpent", 100) { }
@@ -191,6 +203,8 @@ namespace dungeon_debugger
     }
 
 
+    // Sub sub class
+    // Ogre : Enemy
     public class Ogre : Enemy
     {
         public Ogre() : base(Art.EnemyType.Ogre, "OutOfBounds Ogre", 150) { }

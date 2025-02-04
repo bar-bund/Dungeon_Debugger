@@ -1,5 +1,15 @@
 ﻿using System;
 
+// Responsibilities: Represents items that the player can pick up or use
+// (e.g., potions, weapons, shields, etc.). This class can include properties
+// like name, effects, and how they interact with the player.
+
+// Example Responsibilities: Define the types of items,
+// how they modify the player’s stats or abilities
+// (e.g., healing items, damage-dealing items),
+// and how they can be added to the inventory.
+
+
 namespace dungeon_debugger
 {
     // Item base class

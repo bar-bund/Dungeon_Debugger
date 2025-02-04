@@ -2,6 +2,16 @@
 using System.Security.AccessControl;
 using System.Threading;
 
+// Responsibilities: This class should handle the game flow,
+// such as starting the game, the main game loop (GameLoop()),
+// and quitting the game. It manages the state of the game and
+// interacts with other components like the player and enemies.
+
+// Example Responsibilities: Initializing the player,
+// handling encounters, and determining when to end the game.
+
+
+
 namespace dungeon_debugger
 {
     // Singleton pattern for managing the game state
