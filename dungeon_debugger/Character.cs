@@ -16,8 +16,6 @@ namespace dungeon_debugger
     }
 
 
-
-
     // Player class - inherits from Character
     public class Player : Character
     {
@@ -25,7 +23,7 @@ namespace dungeon_debugger
         private List<Item> Inventory { get; set; }
 
         // Constructor: Initializes player with a name and 100 health
-        public Player(string name) : base(name, 100)
+        public Player(string name) : base(name, 5)
         {
             Inventory = new List<Item>(); // Initializes an empty inventory
         }
@@ -43,7 +41,7 @@ namespace dungeon_debugger
         // Method to rest at a bonfire and heal the player
         public void Rest()
         {
-            int healAmount = 10; // Amount of health restored
+            int healAmount = 50; // Amount of health restored
             Health += healAmount;
             Console.WriteLine($"You rest at the bonfire and recover {healAmount} health. Current health: {Health}.");
         }
@@ -78,18 +76,50 @@ namespace dungeon_debugger
         }
     }
 
-
-
-
-    public class Bug : Character
+    public abstract class Enemy : Character
     {
-        public Bug() : base("Buggy Bug", 75) { }
-
-        public int Attack()
+        public Art.EnemyType Type { get; private set; }
+        
+        public Enemy(Art.EnemyType type, string name, int health) : base(name, health)
         {
-            return 15;
+            Type = type;
+            DisplayEnemyArt(); // Call ASCII art when the enemy appears
         }
 
+
+        // Display Enemy Art method
+        private void DisplayEnemyArt()
+        {
+            switch (Type)
+            {
+                case Art.EnemyType.Bug:
+                    Art.DisplayBug();
+                    break;
+
+                case Art.EnemyType.Serpent:
+                    Art.DisplaySerpent();
+                    break;
+
+                case Art.EnemyType.Ogre:
+                    Art.DisplayOgre();
+                    break;
+
+                default:
+                    Console.WriteLine("Unknown Enemy Appeared!");
+                    break;
+            }
+        }
+
+
+        // Virtual method so derived class can overwrite the value
+        public virtual int Attack()
+        {
+            return 10000; // Default attack value if non is overwritten
+        }
+
+
+        // Item drop method
+        protected static Random random = new Random();
         public Item DropItem()
         {
             // List of items that an enemy can drop
@@ -101,8 +131,6 @@ namespace dungeon_debugger
             };
 
             // 50% chance of dropping an item
-            private static Random random = new Random();
-
             if (random.Next(2) == 0)
             {
                 // Selects a random item from the list
@@ -110,42 +138,78 @@ namespace dungeon_debugger
                 Console.WriteLine($"The {Name} dropped a {droppedItem.Name}!");
                 return droppedItem;
             }
+
             return null; // Returns null if no item is dropped
         }
     }
 
 
 
-
-    public class Serpent : Character
+    public class Bug : Enemy
     {
-        public Serpent() : base("Syntax Serpent", 100) { }
+        public Bug() : base(Art.EnemyType.Bug, "Buggy Bug", 75) { }
 
-        public int Attack()
+        // Attack method
+        public override int Attack()
         {
-            return 25;
+            int baseDamage;
+            int attackHitChance = random.Next(1, 5);
+            if (attackHitChance <= 2) // 50% hit chance
+            {
+                baseDamage = 15;
+            }
+            else
+            {
+                baseDamage = 0;
+                Console.WriteLine("The enemy missed!");
+            }
+            return baseDamage;
         }
     }
 
 
-
-
-    public class Ogre : Character
+    public class Serpent : Enemy
     {
-        public Ogre() : base("OutOfBounds Ogre", 150) { }
+        public Serpent() : base(Art.EnemyType.Serpent, "Syntax Serpent", 100) { }
 
-        public int Attack()
+        // Attack method
+        public override int Attack()
         {
-            return 35;
+            int baseDamage;
+            int attackHitChance = random.Next(1, 5);
+            if (attackHitChance <= 3) // 75% hit chance
+            {
+                baseDamage = 25; 
+            }
+            else
+            {
+                baseDamage = 0;
+                Console.WriteLine("The enemy missed!");
+            }
+            return baseDamage;
         }
     }
 
 
-
-    // Enemy class - inherits from Character
-    public class Enemy : Character
+    public class Ogre : Enemy
     {
-        private static Random random = new Random();
-        public Enemy(string name, int health) : base(name, health) { }
+        public Ogre() : base(Art.EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
+
+        // Attack method
+        public override int Attack()
+        {
+            int baseDamage;
+            int attackHitChance = random.Next(1, 5);
+            if (attackHitChance <= 1) // 25% hit chance
+            {
+                baseDamage = 35;
+            }
+            else
+            {
+                baseDamage = 0;
+                Console.WriteLine("The enemy missed!");
+            }
+            return baseDamage;
+        }
     }
 }
