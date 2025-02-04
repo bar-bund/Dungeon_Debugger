@@ -29,7 +29,7 @@ namespace dungeon_debugger
         private List<Item> Inventory { get; set; }
 
         // Constructor: Initializes player with a name and 100 health
-        public Player(string name) : base(name, 5)
+        public Player(string name) : base(name, 100)
         {
             Inventory = new List<Item>(); // Initializes an empty inventory
         }
@@ -87,29 +87,35 @@ namespace dungeon_debugger
     // Enemy : Character
     public abstract class Enemy : Character
     {
-        public Art.EnemyType Type { get; private set; }
+        public EnemyType Type { get; private set; }
         
-        public Enemy(Art.EnemyType type, string name, int health) : base(name, health)
+        public Enemy(EnemyType type, string name, int health) : base(name, health)
         {
             Type = type;
             DisplayEnemyArt(); // Call ASCII art when the enemy appears
         }
 
+        public enum EnemyType
+        {
+            Bug,
+            Serpent,
+            Ogre
+        }
 
         // Display Enemy Art method
         private void DisplayEnemyArt()
         {
             switch (Type)
             {
-                case Art.EnemyType.Bug:
+                case EnemyType.Bug:
                     Art.DisplayBug();
                     break;
 
-                case Art.EnemyType.Serpent:
+                case EnemyType.Serpent:
                     Art.DisplaySerpent();
                     break;
 
-                case Art.EnemyType.Ogre:
+                case EnemyType.Ogre:
                     Art.DisplayOgre();
                     break;
 

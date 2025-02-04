@@ -5,14 +5,7 @@ namespace dungeon_debugger
 {
     public class Art
     {
-        public enum EnemyType
-        {
-            Bug,
-            Serpent,
-            Ogre
-        }
-
-
+        // Intro - Art
         public static void DisplayIntro()
         {
             Console.WriteLine("\n" +
@@ -26,7 +19,7 @@ namespace dungeon_debugger
                               "                   |___/                                          |___/ |___/                    \r\n");
         }
 
-
+        // Player - Art
         public static void DisplayPlayer()
         {
             Console.WriteLine("\n" +
@@ -52,7 +45,7 @@ namespace dungeon_debugger
                               "         `-'              \r\n");
         }
         
-
+        // Bug - Art
         public static void DisplayBug()
         {
             Console.WriteLine("\n" +
@@ -73,7 +66,7 @@ namespace dungeon_debugger
                               "          ':.     .:'            \r\n");
         }
 
-
+        // Serpent - Art
         public static void DisplaySerpent()
         {
             Console.WriteLine("\n" +
@@ -95,7 +88,7 @@ namespace dungeon_debugger
                               "                       \\_           \r\n");
         }
 
-
+        // Ogre - Art
         public static void DisplayOgre()
         {
             Console.WriteLine("\n" +
@@ -121,7 +114,7 @@ namespace dungeon_debugger
                               "          `-..___..-`                \r\n");
         }
 
-
+        // Bonfire - Art
         public static void DisplayBonfire()
         {
             Console.WriteLine("\n" +
@@ -138,7 +131,7 @@ namespace dungeon_debugger
                               "       `'(_ )_)(_)_)'        \r\n");
         }
 
-
+        // Defeat - Art
         public static void DisplayDefeat()
         {
             Console.WriteLine("\n" +
