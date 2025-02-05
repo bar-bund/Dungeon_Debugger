@@ -9,7 +9,8 @@ namespace dungeon_debugger
     // Item base class
     public abstract class Item
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
+        public abstract void Use(Player player);
     }
 
     // Vial class
@@ -21,6 +22,12 @@ namespace dungeon_debugger
         {
             Name = "Vial";
         }
+
+        public override void Use(Player player)
+        {
+            //player.Heal(HealAmount);
+            Console.WriteLine($"You used a {Name} and restored {HealAmount} health.");
+        }
     }
 
     // Bandage class
@@ -30,7 +37,8 @@ namespace dungeon_debugger
 
         public Bandage()
         {
-            Name = "Bandage";
+            //player.IncreaseDamage(DamageBoost);
+            Console.WriteLine($"You used a {Name} and gained {DamageBoost} extra damage for the next attack.");
         }
     }
 
@@ -42,6 +50,12 @@ namespace dungeon_debugger
         public Shield()
         {
             Name = "Shield";
+        }
+
+        public override void Use(Player player)
+        {
+            //player.IncreaseTemporaryHealth(TemporaryHealthBoost);
+            Console.WriteLine($"You used a {Name} and gained {TemporaryHealthBoost} temporary health.");
         }
     }
 }
