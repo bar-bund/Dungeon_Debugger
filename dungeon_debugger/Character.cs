@@ -43,7 +43,6 @@ namespace dungeon_debugger
         private List<Item> Inventory { get; } = new List<Item>();
 
 
-        // FINAL
         // Method to add an item to the player's inventory
         public void AddToInventory(Item item)
         {
@@ -52,7 +51,6 @@ namespace dungeon_debugger
         }
 
 
-        // FINAL
         // Method to display the player's inventory
         public void ViewInventory()
         {
