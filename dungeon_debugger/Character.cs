@@ -1,14 +1,10 @@
 ﻿using System;
 
-// Class that holds the Character classes - Player and Enemies.
-// Includes the methods of the different characters.
-
-
 namespace dungeon_debugger
 {
     // Base class
     // Character
-    public class Character
+    public abstract class Character
     {
         public string Name { get; set; }
         public int Health { get; set; }
@@ -25,35 +21,29 @@ namespace dungeon_debugger
     // Player : Character
     public class Player : Character
     {
-        // Item list
-        private List<Item> Inventory { get; set; }
-
         // Constructor: Initializes player with a name and 100 health
-        public Player(string name) : base(name, 100)
-        {
-            Inventory = new List<Item>(); // Initializes an empty inventory
-        }
+        public Player(string name) : base(name, 100) { }
+
+        // Fixed base damage
+        public int Attack() => 25;
 
 
-        // Method for attacking an enemy, with optional item effects
-        public int Attack()
-        {
-            int baseDamage = 25;
-            return baseDamage; // Returns final attack damage
-        }
-
-
-
+        // FINAL
         // Method to rest at a bonfire and heal the player
         public void Rest()
         {
             int healAmount = 50; // Amount of health restored
-            Health += healAmount;
+            Health = Math.Min(Health + healAmount, 100); // Prevent overhealing
+            Art.DisplayBonfire();
             Console.WriteLine($"You rest at the bonfire and recover {healAmount} health. Current health: {Health}.");
         }
 
 
+        // Item list
+        private List<Item> Inventory { get; } = new List<Item>();
 
+
+        // FINAL
         // Method to add an item to the player's inventory
         public void AddToInventory(Item item)
         {
@@ -62,11 +52,17 @@ namespace dungeon_debugger
         }
 
 
-
+        // FINAL
         // Method to display the player's inventory
         public void ViewInventory()
         {
-            Console.WriteLine("Your Inventory:");
+            Console.WriteLine("\nYour Inventory:");
+
+            if (Inventory.Count == 0)
+            {
+                Console.WriteLine("- Empty");
+                return;
+            }
 
             foreach (var item in Inventory)
             {
@@ -95,32 +91,29 @@ namespace dungeon_debugger
             DisplayEnemyArt(); // Call ASCII art when the enemy appears
         }
 
-        public enum EnemyType
-        {
-            Bug,
-            Serpent,
-            Ogre
-        }
+        public enum EnemyType { Bug, Serpent, Ogre }
 
-        // Display Enemy Art method
+
+        //FINAL
+        // Method displaying enemy art
         private void DisplayEnemyArt()
         {
             switch (Type)
             {
-                case EnemyType.Bug:
-                    Art.DisplayBug();
+                case EnemyType.Bug: 
+                    Art.DisplayBug(); 
+                    break;
+                
+                case EnemyType.Serpent: 
+                    Art.DisplaySerpent(); 
+                    break;
+                
+                case EnemyType.Ogre: 
+                    Art.DisplayOgre(); 
                     break;
 
-                case EnemyType.Serpent:
-                    Art.DisplaySerpent();
-                    break;
-
-                case EnemyType.Ogre:
-                    Art.DisplayOgre();
-                    break;
-
-                default:
-                    Console.WriteLine("Unknown Enemy Appeared!");
+                default: 
+                    Console.WriteLine("Unknown enemy appeared!"); 
                     break;
             }
         }
@@ -163,7 +156,7 @@ namespace dungeon_debugger
     // Bug : Enemy
     public class Bug : Enemy
     {
-        public Bug() : base(Art.EnemyType.Bug, "Buggy Bug", 75) { }
+        public Bug() : base(EnemyType.Bug, "Buggy Bug", 75) { }
 
         // Attack method
         public override int Attack()
@@ -188,7 +181,7 @@ namespace dungeon_debugger
     // Serpent : Enemy
     public class Serpent : Enemy
     {
-        public Serpent() : base(Art.EnemyType.Serpent, "Syntax Serpent", 100) { }
+        public Serpent() : base(EnemyType.Serpent, "Syntax Serpent", 100) { }
 
         // Attack method
         public override int Attack()
@@ -213,7 +206,7 @@ namespace dungeon_debugger
     // Ogre : Enemy
     public class Ogre : Enemy
     {
-        public Ogre() : base(Art.EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
+        public Ogre() : base(EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
 
         // Attack method
         public override int Attack()

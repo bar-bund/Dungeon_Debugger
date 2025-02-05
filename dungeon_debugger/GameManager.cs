@@ -2,16 +2,6 @@
 using System.Security.AccessControl;
 using System.Threading;
 
-// Responsibilities: This class should handle the game flow,
-// such as starting the game, the main game loop (GameLoop()),
-// and quitting the game. It manages the state of the game and
-// interacts with other components like the player and enemies.
-
-// Example Responsibilities: Initializing the player,
-// handling encounters, and determining when to end the game.
-
-
-
 namespace dungeon_debugger
 {
     // Singleton pattern for managing the game state
@@ -20,16 +10,15 @@ namespace dungeon_debugger
         private static GameManager _instance; // Holds the single instance of GameManager
         public static GameManager Instance => _instance ??= new GameManager(); // Ensures only one instance exists
 
-        private GameManager() { } // Private constructor to enforce Singleton pattern
+        private GameManager() { } // Private constructor
 
-        public Player CurrentPlayer { get; set; }
+        public Player CurrentPlayer { get; private set; }
         private int PlayerPosition { get; set; } = 5;
         private const int MapSize = 10;
-
-        // ??????? Maybe
-        Random random = new Random();
+        private Random random = new Random();
 
 
+        // FINAL
         // Starts the game and initializes the player
         public void StartGame()
         {
@@ -48,16 +37,15 @@ namespace dungeon_debugger
                               $"succumb to the darkness!");
 
             Art.DisplayPlayer();
-
             Console.WriteLine("Press 'Enter' to continue...");
-            Console.ReadKey();
+            Console.ReadLine();
             Console.Clear();
 
             GameLoop(); // Starts the main game loop
         }
 
 
-
+        // FINAL
         // Main game loop
         private void GameLoop()
         {
@@ -67,16 +55,16 @@ namespace dungeon_debugger
             {
                 Console.Clear();
                 PrintMap();
-                Console.WriteLine("Choose a direction:\n" +
-                                  "1: Left\n" +
-                                  "2: Right\n" +
-                                  "3: Quit the game\n");
 
-                string input = Console.ReadLine();  // Read user input as a string
-                int choice;
+                Console.WriteLine($"Player health: {CurrentPlayer.Health}");
+                
+                Console.WriteLine("\nChoose a direction:" +
+                                  "\n1: Left" +
+                                  "\n2: Right" +
+                                  "\n3: Quit the game");
 
-                // Use int.TryParse to safely parse the input
-                if (int.TryParse(input, out choice))
+                // Use int.TryParse to parse the user input into choice int
+                if (int.TryParse(Console.ReadLine(), out int choice))
                 {
                     switch (choice)
                     {
@@ -89,19 +77,18 @@ namespace dungeon_debugger
                             break;
 
                         case 3:
-                            Console.WriteLine("You have given up on your journey...");
+                            Console.WriteLine("\nYou have chosen to abandon your journey...");
                             isRunning = false; // Exit game loop
                             break;
 
                         default:
-                            Console.WriteLine("Invalid choice. Try again.");
+                            Console.WriteLine("\nInvalid choice. Please enter a number between 1 and 3.");
                             break;
                     }
                 }
                 else
                 {
-                    // If input is not a valid integer, inform the user
-                    Console.WriteLine("Invalid input. Please enter a number (1-3).");
+                    Console.WriteLine("\nInvalid choice. Please enter a number between 1 and 3.");
                 }
             }
 
@@ -110,9 +97,9 @@ namespace dungeon_debugger
             {
                 Console.Clear();
                 Art.DisplayDefeat();
-                Console.WriteLine("You have perished on your journey. Game over...");
-                Console.WriteLine("Press 'Enter' to continue...");
-                Console.ReadKey();
+                Console.WriteLine("\nYou have perished on your journey. Game over...");
+                Console.WriteLine("\nPress 'Enter' to end the game...");
+                Console.ReadLine();
                 isRunning = false; // Exit game loop
             }
         }
@@ -122,30 +109,31 @@ namespace dungeon_debugger
         // Handle movement and determines encounter
         private void HandleEncounter(int direction)
         {
-            // Pass direction to moveplayer method to update map
+            // Pass direction to MovePlayer() method to update map
             MovePlayer(direction);
-            int randomNr = random.Next(1, 5); // Generate random nr. between 1-4
 
+            int randomNr = random.Next(1, 5);
             // 75% chance of getting attacked
             if (randomNr <= 3)
             {
                 // Array of different enemy types
                 Enemy enemy = GenerateRandomEnemy();
-                Console.WriteLine($"A {enemy.Name} appears!");
+                Console.WriteLine($"\nA {enemy.Name} appears!");
+                Thread.Sleep(1000);
                 Battle(enemy);
             }
             // 25% chance of getting a safe bonfire
             else
             {
-                Console.WriteLine("You find a safe bonfire to rest at.");
-                Art.DisplayBonfire();
+                Console.WriteLine("\nYou find a safe bonfire to rest at.");
                 CurrentPlayer.Rest();
-                Console.WriteLine("Press 'Enter' to continue...");
+                Console.WriteLine("\nPress 'Enter' to continue...");
                 Console.ReadKey();
             }
         }
 
 
+        // FINAL
         // Generates random enemy during every encounter
         private Enemy GenerateRandomEnemy()
         {
@@ -177,8 +165,8 @@ namespace dungeon_debugger
         }
 
 
-
-        // Moves the player and determines encounters
+        // FINAL
+        // Moves the player
         private void MovePlayer(int direction)
         {
             // Update player position
@@ -188,7 +176,7 @@ namespace dungeon_debugger
             if (PlayerPosition < 0)
             {
                 PlayerPosition = 0;
-                Console.WriteLine("You can't go further left.");
+                Console.WriteLine("\nYou can't go further left.");
                 return;
             }
 
@@ -196,13 +184,13 @@ namespace dungeon_debugger
             if (PlayerPosition >= MapSize)
             {
                 PlayerPosition = MapSize - 1;
-                Console.WriteLine("You can't go further right.");
+                Console.WriteLine("\nYou can't go further right.");
                 return;
             }
         }
 
 
-
+        // FINAL
         // Prints the map with player position
         private void PrintMap()
         {
@@ -226,57 +214,56 @@ namespace dungeon_debugger
         // Handles combat
         private void Battle(Enemy enemy)
         {
-            Console.WriteLine($"You encounter a {enemy.Name} with {enemy.Health} health!");
+            Console.WriteLine($"\nYou encounter a {enemy.Name} with {enemy.Health} health!");
 
             while (enemy.Health > 0 && CurrentPlayer.Health > 0)
             {
-                Console.WriteLine("Choose an action:\n" +
-                                  "1: Attack\n" +
-                                  "2: Run\n" +
-                                  "3: Inventory?\n");
+                // Console.Clear();
+                Console.WriteLine($"\nPlayer health: {CurrentPlayer.Health}" +
+                                  $"\nEnemy health:  {enemy.Health}");
+
+                Console.WriteLine("\nChoose an action:" +
+                                  "\n1: Attack" +
+                                  "\n2: Run" +
+                                  "\n3: Inventory");
 
                 int action = Convert.ToInt32(Console.ReadLine());
-
-                // ???????? MAYBE
-                //if (!int.TryParse(Console.ReadLine(), out action))
-                //{
-                //    Console.WriteLine("Invalid input. Please enter a number between 1 and 3.");
-                //    continue;
-                //}
 
                 switch (action)
                 {
                     case 1: // Attack
                         int damage = CurrentPlayer.Attack(); // Player attacks
                         enemy.Health -= damage;
-                        Console.WriteLine($"You dealt {damage} damage to the {enemy.Name}!");
+                        Console.WriteLine($"\nYou dealt {damage} damage to the {enemy.Name}!");
                         
                         if (enemy.Health > 0)
                         {
                             int enemyDamage = enemy.Attack(); // Enemy counterattacks
                             CurrentPlayer.Health -= enemyDamage;
-                            Console.WriteLine($"The {enemy.Name} dealt {enemyDamage} damage to you!");
+                            Console.WriteLine($"\nThe {enemy.Name} dealt {enemyDamage} damage to you!");
                         }
                         break;
 
                     case 2: // Run
                         if (random.Next(2) == 0) // 0 or 1, so 50/50 chance
                         {
-                            Console.WriteLine("You fled the battle!");
+                            Console.WriteLine("\nYou fled the battle!");
+                            Console.WriteLine("\nPress 'Enter' to continue...");
+                            Console.ReadLine();
                             return; // Break out of the method
                         }
                         else
                         {
-                            Console.WriteLine("You failed to flee! The enemy caught you!");
+                            Console.WriteLine("\nYou failed to flee! The enemy caught you!");
                             break; // Continue the battle
                         }
 
                     case 3: // Check Inventory
-                        Console.WriteLine("Checking your inventory...");
+                        Console.WriteLine("\nChecking your inventory...");
                         break;
 
                     default:
-                        Console.WriteLine("Invalid action. Please choose a valid option (1-3).");
+                        Console.WriteLine("\nInvalid action. Please enter a number between 1 and 3.");
                         break;
                 }
             }
@@ -284,16 +271,18 @@ namespace dungeon_debugger
 
             if (CurrentPlayer.Health <= 0)
             {
-                Console.WriteLine("You have been defeated in battle...");
+                Console.WriteLine("\nYou have been defeated in battle...");
             }
+
             else if (enemy.Health <= 0)
             {
-                Console.WriteLine($"You defeated the {enemy.Name}!");
+                Console.WriteLine($"\nYou defeated the {enemy.Name}!");
                 Item droppedItem = enemy.DropItem();
-                if (droppedItem != null)
-                {
-                    CurrentPlayer.AddToInventory(droppedItem);
-                }
+
+                if (droppedItem != null) CurrentPlayer.AddToInventory(droppedItem);
+
+                Console.WriteLine("\nPress 'Enter' to continue...");
+                Console.ReadLine();
             }
 
             GameLoop();

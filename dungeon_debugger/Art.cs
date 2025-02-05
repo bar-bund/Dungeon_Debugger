@@ -19,6 +19,7 @@ namespace dungeon_debugger
                               "                   |___/                                          |___/ |___/                    \r\n");
         }
 
+
         // Player - Art
         public static void DisplayPlayer()
         {
@@ -114,6 +115,7 @@ namespace dungeon_debugger
                               "          `-..___..-`                \r\n");
         }
 
+
         // Bonfire - Art
         public static void DisplayBonfire()
         {
@@ -163,7 +165,20 @@ namespace dungeon_debugger
         }
 
 
-        public static void DisplayBandaid()
+        // Bandage - Art
+        public static void DisplayBandage()
+        {
+            Console.WriteLine();
+        }
+
+        // Shield - Art
+        public static void DisplayShield()
+        {
+            Console.WriteLine();
+        }
+
+        // Vial - Art
+        public static void DisplayVial()
         {
             Console.WriteLine();
         }

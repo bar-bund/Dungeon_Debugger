@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Class to show saved game data like
-// Items and how many you have of each
+
 // Number of enemies slain
 // Damage taken
 // Damage done

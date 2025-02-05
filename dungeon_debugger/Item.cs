@@ -1,53 +1,67 @@
 ﻿using System;
-
-// Responsibilities: Represents items that the player can pick up or use
-// (e.g., potions, weapons, shields, etc.). This class can include properties
-// like name, effects, and how they interact with the player.
-
-// Example Responsibilities: Define the types of items,
-// how they modify the player’s stats or abilities
-// (e.g., healing items, damage-dealing items),
-// and how they can be added to the inventory.
-
+using System.Collections.Generic;
 
 namespace dungeon_debugger
 {
-    // Item base class
+    // Base class for all items
     public abstract class Item
     {
         public string Name { get; set; }
+        public abstract void Use(Player player);
     }
 
-    // Vial class
-    public class Vial : Item
-    {
-        public int DamageBoost { get; } = 5;
 
-        public Vial()
-        {
-            Name = "Vial";
-        }
-    }
-
-    // Bandage class
+    // Healing item - Bandage
     public class Bandage : Item
     {
-        public int HealAmount { get; } = 15;
+        private const int HealAmount = 15;
 
         public Bandage()
         {
             Name = "Bandage";
         }
+
+        public override void Use(Player player)
+        {
+            player.Heal(HealAmount);
+            Console.WriteLine($"You used a {Name} and restored {HealAmount} health.");
+        }
     }
 
-    // Shield class
+
+    // Damage-boosting item - Vial
+    public class Vial : Item
+    {
+        private const int DamageBoost = 5;
+
+        public Vial()
+        {
+            Name = "Vial";
+        }
+
+        public override void Use(Player player)
+        {
+            player.IncreaseDamage(DamageBoost);
+            Console.WriteLine($"You used a {Name} and gained {DamageBoost} extra damage for the next attack.");
+        }
+    }
+
+
+    // Defensive item - Shield
     public class Shield : Item
     {
-        public int TemporaryHealthBoost { get; } = 10;
+        private const int TemporaryHealthBoost = 10;
 
         public Shield()
         {
             Name = "Shield";
         }
+
+        public override void Use(Player player)
+        {
+            player.IncreaseTemporaryHealth(TemporaryHealthBoost);
+            Console.WriteLine($"You used a {Name} and gained {TemporaryHealthBoost} temporary health.");
+        }
     }
 }
+
