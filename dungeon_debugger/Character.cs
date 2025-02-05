@@ -125,11 +125,11 @@ namespace dungeon_debugger
 
 
         // Item drop method
-        protected static Random random = new Random();
-        public Item DropItem()
+        protected Random random = new Random();
+        public Item? DropItem()
         {
             // List of items that an enemy can drop
-            List<Item> possibleItems = new List<Item>
+            List<Item> possibleItems = new()
             {
                 new Vial(),
                 new Bandage(),

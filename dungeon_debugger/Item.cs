@@ -6,7 +6,7 @@ namespace dungeon_debugger
     // Base class for all items
     public abstract class Item
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public abstract void Use(Player player);
     }
 
@@ -23,7 +23,7 @@ namespace dungeon_debugger
 
         public override void Use(Player player)
         {
-            player.Heal(HealAmount);
+            //player.Heal(HealAmount);
             Console.WriteLine($"You used a {Name} and restored {HealAmount} health.");
         }
     }
@@ -41,7 +41,7 @@ namespace dungeon_debugger
 
         public override void Use(Player player)
         {
-            player.IncreaseDamage(DamageBoost);
+            //player.IncreaseDamage(DamageBoost);
             Console.WriteLine($"You used a {Name} and gained {DamageBoost} extra damage for the next attack.");
         }
     }
@@ -59,9 +59,8 @@ namespace dungeon_debugger
 
         public override void Use(Player player)
         {
-            player.IncreaseTemporaryHealth(TemporaryHealthBoost);
+            //player.IncreaseTemporaryHealth(TemporaryHealthBoost);
             Console.WriteLine($"You used a {Name} and gained {TemporaryHealthBoost} temporary health.");
         }
     }
 }
-
