@@ -12,14 +12,16 @@ namespace dungeon_debugger
     {
         public string GetPlayerName()
         {
-            Console.WriteLine("Enter you name: ");
-            return Console.ReadLine() ?? "Rider";
+            Console.WriteLine("Enter your name: ");
+            string input = Console.ReadLine();
+            return string.IsNullOrWhiteSpace(input) ? "Rider" : input;
+
         }
 
 
         public void ShowWelcomeMessage(string playerName)
         {
-            Console.WriteLine($"Welcome, Knight {playerName}!\r\n" +
+            Console.WriteLine($"\nWelcome, Knight {playerName}!\r\n" +
                               $"Your journey begins in these desolate lands where shadows creep, and danger lurks at every turn. \r\n" +
                               $"As a lone wanderer, you must navigate this unforgiving world, \r\n" +
                               $"battling fierce enemies and seeking solace at rare bonfires. \r\n" +

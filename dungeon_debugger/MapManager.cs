@@ -13,7 +13,7 @@ namespace dungeon_debugger
         private const int MapSize = 10;
         private int PlayerPosition = 5;
 
-
+        // Move the player on the map
         public void MovePlayer(int direction)
         {
             PlayerPosition += direction;
@@ -31,13 +31,13 @@ namespace dungeon_debugger
             }
         }
 
-
+        // Print map
         public void PrintMap()
         {
             Console.WriteLine("\nMap:");
             for (int i = 0; i < MapSize; i++)
             {
-                Console.WriteLine(i == PlayerPosition ? "P " : "- ");
+                Console.Write(i == PlayerPosition ? "P " : "- ");
             }
             Console.WriteLine("\n");
         }

@@ -37,7 +37,10 @@ namespace dungeon_debugger
 
             while (enemy.Health > 0 && player.Health > 0)
             {
+                Console.WriteLine("\n-----------------------------------------------------------------");
                 Console.WriteLine($"\nPlayer health: {player.Health}");
+                Console.WriteLine($"Player attack damage: {player.Attack}");
+
                 Console.WriteLine($"\nEnemy health:  {enemy.Health}");
 
                 Console.WriteLine($"\nChoose an action:" +
@@ -45,7 +48,12 @@ namespace dungeon_debugger
                                   $"\n2: Run" +
                                   $"\n3: Inventory");
 
-                int action = Convert.ToInt32(Console.ReadLine());
+
+                if (!int.TryParse(Console.ReadLine(), out int action))
+                {
+                    Console.WriteLine("Invalid input.");
+                    continue;
+                }
 
                 switch (action)
                 {
@@ -57,6 +65,7 @@ namespace dungeon_debugger
                         break;
                     case 3:
                         Console.WriteLine("\nChecking your inventory...");
+                        player.UseItem();
                         break;
                     default:
                         Console.WriteLine("\nInvalid action.");
@@ -72,13 +81,15 @@ namespace dungeon_debugger
         {
             int playerDamage = player.Attack();
             enemy.Health -= playerDamage;
-            Console.WriteLine($"\nYou dealt {playerDamage} damage to the {enemy.Name}!");
+            Console.WriteLine($"\nYou dealt: {playerDamage}!");
+            Thread.Sleep(500);
 
             if (enemy.Health > 0)
             {
                 int enemyDamage = enemy.Attack();
                 player.Health -= enemyDamage;
-                Console.WriteLine($"\nThe {enemy.Name} dealt {enemyDamage} damage to you!");
+                Console.WriteLine($"{enemy.Name} dealt: {enemyDamage}!");
+                Thread.Sleep(500);
             }
         }
 
@@ -109,10 +120,14 @@ namespace dungeon_debugger
             {
                 Console.WriteLine($"\nYou defeated the {enemy.Name}!");
 
-                Item droppedItem = enemy.DropItem();
+                Item? droppedItem = enemy.DropItem();
                 if (droppedItem != null)
                 {
                     player.AddToInventory(droppedItem);
+                }
+                else
+                {
+                    Console.WriteLine("\nThe enemy dropped no loot...");
                 }
 
                 Console.WriteLine("Press 'Enter' to continue...");
