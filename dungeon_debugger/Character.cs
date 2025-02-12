@@ -19,7 +19,7 @@ namespace dungeon_debugger
         protected static readonly Random random = new Random();
 
         // Default attack damage
-        public virtual int Attack() => 10;
+        public virtual int Attack() => 1000000000;
     }
 
 
@@ -27,9 +27,14 @@ namespace dungeon_debugger
     // Player : Character
     public class Player : Character
     {
-        private const int maxHealth = 100;
-        private const int normalAttackDamage = 25;
-        private int attackDamage;
+        // Base stats for player
+        private const int maxHealth = 25;
+        private int attackDamage = 25;
+
+        // Bonus stats from items used
+        public int BonusAttack { get; set; } = 0;
+        public bool ReduceNextDamage { get; set; } = false;
+
         private readonly List<Item> inventory = new();
 
         // Constructor: Initializes player
@@ -51,31 +56,31 @@ namespace dungeon_debugger
 
                 Console.WriteLine("You received 10 of each item!");
             }
-            else
-            {
-                attackDamage = normalAttackDamage; // Default attack
-            }
 
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
         }
 
-        // Override attack method to give 1000 damage in God Mode
-        public override int Attack() => attackDamage;
+
+        // FINAL
+        // Attack method. Added bonus attack damage if item is used.
+        // If god mode is enabled check Player() constructor.
+        public override int Attack() => attackDamage + BonusAttack;
 
 
+        // FINAL
         // Method to rest at a bonfire and heal the player
         public void Rest()
         {
             const int healAmount = 50; // Amount of health restored
             Health = Health + healAmount;
-            Art.DisplayBonfire();
             Console.WriteLine($"You rest at the bonfire and recover {healAmount} health. Current health: {Health}.");
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
         }
 
 
+        // FINAL
         // Method to add an item to the player's inventory
         public void AddToInventory(Item item)
         {
@@ -93,17 +98,40 @@ namespace dungeon_debugger
                 return;
             }
 
-            Console.WriteLine("\nSelect an item to use:");
-            for (int i = 0; i < inventory.Count; i++)
+            // Dictionary to count item occurrences
+            Dictionary<string, int> itemCounts = new();
+            List<Item> uniqueItems = new();
+
+            foreach (var item in inventory)
             {
-                Console.WriteLine($"{i + 1}: {inventory[i].Name}");
+                if (itemCounts.ContainsKey(item.Name))
+                {
+                    itemCounts[item.Name]++;
+                }
+                else
+                {
+                    itemCounts[item.Name] = 1;
+                    uniqueItems.Add(item);
+                }
             }
 
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= inventory.Count)
+            // Display inventory with item counts
+            Console.WriteLine("\nSelect an item to use:");
+            for (int i = 0; i < uniqueItems.Count; i++)
             {
-                Item selectedItem = inventory[choice - 1];
+                Console.WriteLine($"{i + 1}: {uniqueItems[i].Name} x{itemCounts[uniqueItems[i].Name]}");
+            }
+
+            // Get player choice
+            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= uniqueItems.Count)
+            {
+                Item selectedItem = uniqueItems[choice - 1];
+
+                // Use item and remove one instance of it
                 selectedItem.Use(this);
-                inventory.RemoveAt(choice - 1);
+                inventory.Remove(inventory.First(i => i.Name == selectedItem.Name)); // Remove only one instance
+
+                Console.WriteLine($"{selectedItem.Name} used!");
             }
             else
             {
@@ -111,6 +139,17 @@ namespace dungeon_debugger
             }
         }
 
+
+        public void AbsorbDamage(int damage)
+        {
+            if (ReduceNextDamage)
+            {
+                damage /= 2;
+                Console.WriteLine("Shield absorbed half of the damage!");
+                ReduceNextDamage = false;
+            }
+            Health -= damage;
+        }
     }
 
 

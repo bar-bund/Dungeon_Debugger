@@ -30,9 +30,10 @@ namespace dungeon_debugger
         }
 
 
-        public void ShowPlayerStats(int health)
+        public void ShowPlayerStats(int health, int attackDamage)
         {
             Console.WriteLine($"\nPlayer health: {health}");
+            Console.WriteLine($"Player attack damage: {attackDamage}");
         }
 
 
@@ -47,15 +48,10 @@ namespace dungeon_debugger
         }
 
 
-        public void ShowEnemyEncounter(Enemy enemy)
-        {
-            Console.WriteLine($"\nA {enemy.Name} appears!");
-        }
-
-
         public void ShowBonfireRest()
         {
             Console.WriteLine("\nYou find a safe bonfire to rest at...");
+            Art.DisplayBonfire();
         }
 
 
@@ -65,9 +61,17 @@ namespace dungeon_debugger
         }
 
 
+        public void ShowDefeatMesseage()
+        {
+            Art.DisplayDefeat();
+            Console.WriteLine("\nYou have perished on your journey. Game over...");
+        }
+
+
         public void ShowInvalidChoice()
         {
             Console.WriteLine("\nInvalid choice. Please enter a valid number.");
+            Thread.Sleep(500);
         }
     }
 }

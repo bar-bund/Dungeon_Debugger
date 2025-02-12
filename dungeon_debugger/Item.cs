@@ -6,7 +6,13 @@ namespace dungeon_debugger
     // Base class for all items
     public abstract class Item
     {
-        public string? Name { get; set; }
+        public string Name { get; }
+
+        protected Item(string name) 
+        { 
+            Name = name;
+        }
+
         public abstract void Use(Player player);
     }
 
@@ -14,17 +20,13 @@ namespace dungeon_debugger
     // Healing item - Bandage
     public class Bandage : Item
     {
-        private const int HealAmount = 15;
-
-        public Bandage()
-        {
-            Name = "Bandage";
-        }
+        public Bandage() : base("Bandage") { }
 
         public override void Use(Player player)
         {
-            //player.Heal(HealAmount);
-            Console.WriteLine($"You used a {Name} and restored {HealAmount} health.");
+            int healAmount = 30;
+            player.Health = player.Health + healAmount;
+            Console.WriteLine($"You used a {Name} and restored {healAmount} health.");
         }
     }
 
@@ -32,17 +34,13 @@ namespace dungeon_debugger
     // Damage-boosting item - Vial
     public class Vial : Item
     {
-        private const int DamageBoost = 5;
-
-        public Vial()
-        {
-            Name = "Vial";
-        }
+        public Vial() : base("Vial") { }
 
         public override void Use(Player player)
         {
-            //player.IncreaseDamage(DamageBoost);
-            Console.WriteLine($"You used a {Name} and gained {DamageBoost} extra damage for the next attack.");
+            int attackBoost = 15;
+            player.BonusAttack += attackBoost;
+            Console.WriteLine($"You used a {Name} and gained {attackBoost} extra damage for the next attack.");
         }
     }
 
@@ -50,17 +48,12 @@ namespace dungeon_debugger
     // Defensive item - Shield
     public class Shield : Item
     {
-        private const int TemporaryHealthBoost = 10;
-
-        public Shield()
-        {
-            Name = "Shield";
-        }
+        public Shield() : base("Shield") { }
 
         public override void Use(Player player)
         {
-            //player.IncreaseTemporaryHealth(TemporaryHealthBoost);
-            Console.WriteLine($"You used a {Name} and gained {TemporaryHealthBoost} temporary health.");
+            Console.WriteLine($"You used {Name}. Your defense increases, reducing the next attack by 50%!");
+            player.ReduceNextDamage = true;
         }
     }
 }

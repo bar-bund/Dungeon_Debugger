@@ -11,9 +11,11 @@ namespace dungeon_debugger
 {
     public class BattleManager
     {
-        private Random random = new();
+        // Shared RNG instance
+        protected static readonly Random random = new();
 
 
+        // Should battle start or encounter bonfire method
         public bool ShouldStartBattle()
         {
             return random.Next(1, 5) <= 3; // 75%
@@ -39,7 +41,7 @@ namespace dungeon_debugger
             {
                 Console.WriteLine("\n-----------------------------------------------------------------");
                 Console.WriteLine($"\nPlayer health: {player.Health}");
-                Console.WriteLine($"Player attack damage: {player.Attack}");
+                Console.WriteLine($"Player attack damage: {player.Attack()}");
 
                 Console.WriteLine($"\nEnemy health:  {enemy.Health}");
 
@@ -81,14 +83,14 @@ namespace dungeon_debugger
         {
             int playerDamage = player.Attack();
             enemy.Health -= playerDamage;
-            Console.WriteLine($"\nYou dealt: {playerDamage}!");
+            Console.WriteLine($"\nYou dealt: {playerDamage} damage!");
             Thread.Sleep(500);
 
             if (enemy.Health > 0)
             {
                 int enemyDamage = enemy.Attack();
                 player.Health -= enemyDamage;
-                Console.WriteLine($"{enemy.Name} dealt: {enemyDamage}!");
+                Console.WriteLine($"{enemy.Name} dealt: {enemyDamage} damage!");
                 Thread.Sleep(500);
             }
         }

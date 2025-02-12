@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Security.AccessControl;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace dungeon_debugger
 {
@@ -23,8 +25,6 @@ namespace dungeon_debugger
 
         public Player CurrentPlayer { get; private set; }
         private int PlayerPosition { get; set; } = 5;
-        private const int MapSize = 10;
-        private readonly Random random = new();
 
 
         // Starts the game and initializes the player
@@ -57,7 +57,7 @@ namespace dungeon_debugger
                 Console.Clear();
                 mapManager.PrintMap();
 
-                uiManager.ShowPlayerStats(CurrentPlayer.Health);
+                uiManager.ShowPlayerStats(CurrentPlayer.Health, CurrentPlayer.Attack());
                 int choice = uiManager.GetPlayerChoice();
 
                 switch (choice)
@@ -85,8 +85,7 @@ namespace dungeon_debugger
             if (CurrentPlayer.Health <= 0)
             {
                 Console.Clear();
-                Art.DisplayDefeat();
-                Console.WriteLine("\nYou have perished on your journey. Game over...");
+                uiManager.ShowDefeatMesseage();
                 Console.WriteLine("\nPress 'Enter' to end the game...");
                 Console.ReadLine();
                 isRunning = false; // Exit game loop
@@ -103,7 +102,6 @@ namespace dungeon_debugger
             if (battleManager.ShouldStartBattle())
             {
                 Enemy enemy = battleManager.GenerateRandomEnemy();
-                uiManager.ShowEnemyEncounter(enemy);
                 battleManager.StartBattle(CurrentPlayer, enemy);
             }
             else
