@@ -10,24 +10,28 @@ namespace dungeon_debugger
 {
     public class MapManager
     {
-        private const int MapSize = 10;
+        private const int MapSize = 11;
         private int PlayerPosition = 5;
 
-        // Move the player on the map
+        // Move player method
         public void MovePlayer(int direction)
         {
             PlayerPosition += direction;
 
-            if (PlayerPosition < 0) 
-            { 
+            // Returns player to map from left
+            if (PlayerPosition < 0)
+            {
                 PlayerPosition = 0;
                 Console.WriteLine("\nYou can't go further left.");
+                Thread.Sleep(1500);
             }
 
+            // Returns player to map from right
             if (PlayerPosition >= MapSize)
             {
                 PlayerPosition = MapSize - 1;
                 Console.WriteLine("\nYou can't go further right.");
+                Thread.Sleep(1500);
             }
         }
 

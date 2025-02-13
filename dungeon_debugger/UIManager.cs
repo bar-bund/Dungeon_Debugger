@@ -10,17 +10,22 @@ namespace dungeon_debugger
 {
     public class UIManager
     {
+        public void ShowGameTitle()
+        {
+            Art.DisplayIntro();
+        }
+
         public string GetPlayerName()
         {
             Console.WriteLine("Enter your name: ");
             string input = Console.ReadLine();
             return string.IsNullOrWhiteSpace(input) ? "Rider" : input;
-
         }
 
 
         public void ShowWelcomeMessage(string playerName)
         {
+            Art.DisplayPlayer();
             Console.WriteLine($"\nWelcome, Knight {playerName}!\r\n" +
                               $"Your journey begins in these desolate lands where shadows creep, and danger lurks at every turn. \r\n" +
                               $"As a lone wanderer, you must navigate this unforgiving world, \r\n" +
@@ -57,6 +62,7 @@ namespace dungeon_debugger
 
         public void ShowQuitMessage()
         {
+            Art.DisplayAbandon();
             Console.WriteLine("\nYou have chosen to abandon your journey...");
         }
 

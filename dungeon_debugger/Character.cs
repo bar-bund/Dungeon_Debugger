@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 
 namespace dungeon_debugger
 {
@@ -8,6 +9,7 @@ namespace dungeon_debugger
     {
         public string Name { get; set; }
         public int Health { get; set; }
+        public virtual int Attack() => 1000000;
 
         public Character(string name, int health)
         {
@@ -17,9 +19,6 @@ namespace dungeon_debugger
 
         // Shared RNG instance
         protected static readonly Random random = new Random();
-
-        // Default attack damage
-        public virtual int Attack() => 1000000000;
     }
 
 
@@ -28,12 +27,12 @@ namespace dungeon_debugger
     public class Player : Character
     {
         // Base stats for player
-        private const int maxHealth = 25;
-        private int attackDamage = 25;
+        private const int maxHealth = 100;
+        public int playerAttackDamage = 25;
 
         // Bonus stats from items used
-        public int BonusAttack { get; set; } = 0;
-        public bool ReduceNextDamage { get; set; } = false;
+        public int bonusAttack { get; set; } = 0;
+        public bool reduceNextDamage { get; set; } = false;
 
         private readonly List<Item> inventory = new();
 
@@ -44,7 +43,7 @@ namespace dungeon_debugger
             if (name.ToLower() == "god")
             {
                 Console.WriteLine("\nYou have unlocked GOD MODE!");
-                attackDamage = 1000;
+                playerAttackDamage = 1000;
 
                 // Add 10 of each item to inventory
                 for (int i = 0; i < 10; i++)
@@ -65,7 +64,8 @@ namespace dungeon_debugger
         // FINAL
         // Attack method. Added bonus attack damage if item is used.
         // If god mode is enabled check Player() constructor.
-        public override int Attack() => attackDamage + BonusAttack;
+        // Override the base class Attack() method
+        public override int Attack() => playerAttackDamage + bonusAttack;
 
 
         // FINAL
@@ -140,13 +140,15 @@ namespace dungeon_debugger
         }
 
 
-        public void AbsorbDamage(int damage)
+        public void AbsorbDamage(Enemy enemy)
         {
-            if (ReduceNextDamage)
+            int damage = enemy.Attack(); // Get the damage from the enemy's attack
+
+            if (reduceNextDamage)
             {
-                damage /= 2;
+                damage /= 2; // Reduce the damage by half if shield is active
                 Console.WriteLine("Shield absorbed half of the damage!");
-                ReduceNextDamage = false;
+                reduceNextDamage = false; // Deactivate shield after use
             }
             Health -= damage;
         }
@@ -157,19 +159,17 @@ namespace dungeon_debugger
     // Enemy : Character
     public abstract class Enemy : Character
     {
-        public EnemyType Type { get; }
-        
-        protected Enemy(EnemyType type, string name, int health) : base(name, health)
+        public EnemyType Type { get; set; }
+        public enum EnemyType { Bug, Serpent, Ogre }
+        public Enemy(EnemyType type, string name, int health) : base(name, health)
         {
             Type = type;
             DisplayEnemyArt(); // Call ASCII art when the enemy appears
         }
 
-        public enum EnemyType { Bug, Serpent, Ogre }
-
 
         // Method displaying enemy art
-        private void DisplayEnemyArt()
+        public void DisplayEnemyArt()
         {
             switch (Type)
             {
@@ -227,14 +227,14 @@ namespace dungeon_debugger
     {
         public Bug() : base(EnemyType.Bug, "Buggy Bug", 75) { }
 
-        private const int baseAttackDamage = 15;
+        public const int enemyAttackDamage = 15;
 
         // Attack method
         public override int Attack()
         {
-            if (random.Next(2) == 0) // 50% hit chance
+            if (random.Next(4) == 1) // 50% hit chance on player
             {
-                return baseAttackDamage;
+                return enemyAttackDamage;
             }
             else
             {
@@ -251,14 +251,14 @@ namespace dungeon_debugger
     {
         public Serpent() : base(EnemyType.Serpent, "Syntax Serpent", 100) { }
 
-        private const int baseAttackDamage = 25;
+        public const int enemyAttackDamage = 25;
 
         // Attack method
         public override int Attack()
         {
-            if (random.Next(4) <= 2) // 75% hit chance
+            if (random.Next(4) <= 2) // 75% hit chance on player
             {
-                return baseAttackDamage; 
+                return enemyAttackDamage; 
             }
             else
             {
@@ -275,14 +275,14 @@ namespace dungeon_debugger
     {
         public Ogre() : base(EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
 
-        private const int baseAttackDamage = 35;
+        public const int enemyAttackDamage = 35;
 
         // Attack method
         public override int Attack()
         {
-            if (random.Next(4) <= 0) // 25% hit chance
+            if (random.Next(4) <= 0) // 25% hit chance on player
             {
-                return baseAttackDamage;
+                return enemyAttackDamage;
             }
             else
             {

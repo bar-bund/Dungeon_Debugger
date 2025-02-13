@@ -24,20 +24,18 @@ namespace dungeon_debugger
         }
 
         public Player CurrentPlayer { get; private set; }
-        private int PlayerPosition { get; set; } = 5;
 
 
         // Starts the game and initializes the player
         public void StartGame()
         {
-            Art.DisplayIntro();
+            uiManager.ShowGameTitle();
 
             // Player info and welcome message
             string playerName = uiManager.GetPlayerName();
             CurrentPlayer = new Player(playerName);
 
             uiManager.ShowWelcomeMessage(CurrentPlayer.Name);
-            Art.DisplayPlayer();
 
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();

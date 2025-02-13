@@ -39,7 +39,7 @@ namespace dungeon_debugger
         public override void Use(Player player)
         {
             int attackBoost = 15;
-            player.BonusAttack += attackBoost;
+            player.bonusAttack += attackBoost;
             Console.WriteLine($"You used a {Name} and gained {attackBoost} extra damage for the next attack.");
         }
     }
@@ -53,7 +53,7 @@ namespace dungeon_debugger
         public override void Use(Player player)
         {
             Console.WriteLine($"You used {Name}. Your defense increases, reducing the next attack by 50%!");
-            player.ReduceNextDamage = true;
+            player.reduceNextDamage = true;
         }
     }
 }

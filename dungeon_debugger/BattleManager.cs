@@ -36,12 +36,19 @@ namespace dungeon_debugger
         public void StartBattle(Player player, Enemy enemy)
         {
             Console.WriteLine($"\nYou encounter a {enemy.Name} with {enemy.Health} health!");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
 
             while (enemy.Health > 0 && player.Health > 0)
             {
+                // Clear screen and display enemy after every action
+                Console.Clear();
+                enemy.DisplayEnemyArt();
+
+
                 Console.WriteLine("\n-----------------------------------------------------------------");
                 Console.WriteLine($"\nPlayer health: {player.Health}");
-                Console.WriteLine($"Player attack damage: {player.Attack()}");
+                Console.WriteLine($"Player attack damage: {player.playerAttackDamage}");
 
                 Console.WriteLine($"\nEnemy health:  {enemy.Health}");
 
@@ -81,17 +88,17 @@ namespace dungeon_debugger
 
         private void Attack(Player player, Enemy enemy)
         {
-            int playerDamage = player.Attack();
+            int playerDamage = player.playerAttackDamage;
             enemy.Health -= playerDamage;
             Console.WriteLine($"\nYou dealt: {playerDamage} damage!");
-            Thread.Sleep(500);
+            Thread.Sleep(1500);
 
             if (enemy.Health > 0)
             {
                 int enemyDamage = enemy.Attack();
                 player.Health -= enemyDamage;
                 Console.WriteLine($"{enemy.Name} dealt: {enemyDamage} damage!");
-                Thread.Sleep(500);
+                Thread.Sleep(1500);
             }
         }
 
@@ -107,6 +114,7 @@ namespace dungeon_debugger
             }
 
             Console.WriteLine("\nYou failed to flee! The enemy caught you!");
+            Thread.Sleep(1500);
             return false;
         }
 
