@@ -95,7 +95,7 @@ namespace dungeon_debugger
                 return;
             }
 
-            // Count unique item occurrences
+            // Count unique item
             Dictionary<string, int> itemCounts = new();
             List<Item> uniqueItems = new();
 
@@ -224,7 +224,7 @@ namespace dungeon_debugger
     {
         public Bug() : base(EnemyType.Bug, "Buggy Bug", 75) { }
 
-        public const int enemyAttackDamage = 15;
+        private const int enemyAttackDamage = 15;
 
         // Attack method
         public override int Attack()
@@ -247,7 +247,7 @@ namespace dungeon_debugger
     {
         public Serpent() : base(EnemyType.Serpent, "Syntax Serpent", 100) { }
 
-        public const int enemyAttackDamage = 25;
+        private const int enemyAttackDamage = 25;
 
         // Attack method
         public override int Attack()
@@ -270,7 +270,7 @@ namespace dungeon_debugger
     {
         public Ogre() : base(EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
 
-        public const int enemyAttackDamage = 35;
+        private const int enemyAttackDamage = 35;
 
         // Attack method
         public override int Attack()

@@ -30,7 +30,9 @@ namespace dungeon_debugger
         {
             int healAmount = 30;
             player.Health = player.Health + healAmount;
-            Console.WriteLine($"You used a {Name} and restored {healAmount} health.");
+            Console.WriteLine($"\nYou used a {Name} and restored {healAmount} health.");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
     }
 
@@ -39,14 +41,16 @@ namespace dungeon_debugger
     public class Vial : Item
     {
         // Constructor calling the base class with the name "Vial"
-        public Vial() : base("Vial") { }
+        public Vial() : base("Damageboost Vial") { }
 
         // Override the Use method to implement specific behavior for the Vial
         public override void Use(Player player)
         {
-            int attackBoost = 15;
+            int attackBoost = 10;
             player.bonusAttack += attackBoost;
-            Console.WriteLine($"You used a {Name} and gained {attackBoost} extra damage for the next attack.");
+            Console.WriteLine($"\nYou used a {Name} and gained {attackBoost} extra damage!");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
     }
 
@@ -60,8 +64,10 @@ namespace dungeon_debugger
         // Override the Use method to implement specific behavior for the Shield
         public override void Use(Player player)
         {
-            Console.WriteLine($"You used {Name}. Your defense increases, reducing the next attack by 50%!");
+            Console.WriteLine($"\nYou used {Name}. Your defense increases, reducing the next attack by 50%!");
             player.reduceNextDamage = true;
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
     }
 }
