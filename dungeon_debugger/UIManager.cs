@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// Handles the input/output
-
+// Handles the input/output (UI-related tasks)
 namespace dungeon_debugger
 {
     public class UIManager
     {
+        // Displays the game title/artwork
         public void ShowGameTitle()
         {
             Art.DisplayIntro();
         }
 
+
+        // Prompts the player for their name, returns the name entered or "Rider" as default
         public string GetPlayerName()
         {
             Console.WriteLine("Enter your name: ");
@@ -23,6 +25,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays a welcome message to the player with their name
         public void ShowWelcomeMessage(string playerName)
         {
             Art.DisplayPlayer();
@@ -35,6 +38,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays player stats like health and attack damage
         public void ShowPlayerStats(int health, int attackDamage)
         {
             Console.WriteLine($"\nPlayer health: {health}");
@@ -42,6 +46,7 @@ namespace dungeon_debugger
         }
 
 
+        // Prompts the player to choose an action and returns their choice
         public int GetPlayerChoice()
         {
             Console.WriteLine("\nChoose a direction:" +
@@ -53,6 +58,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays a message when the player finds a bonfire to rest at
         public void ShowBonfireRest()
         {
             Console.WriteLine("\nYou find a safe bonfire to rest at...");
@@ -60,6 +66,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays a message when the player chooses to quit the game
         public void ShowQuitMessage()
         {
             Art.DisplayAbandon();
@@ -67,6 +74,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays a message when the player is defeated
         public void ShowDefeatMesseage()
         {
             Art.DisplayDefeat();
@@ -74,6 +82,7 @@ namespace dungeon_debugger
         }
 
 
+        // Displays an error message when the player enters an invalid choice
         public void ShowInvalidChoice()
         {
             Console.WriteLine("\nInvalid choice. Please enter a valid number.");
