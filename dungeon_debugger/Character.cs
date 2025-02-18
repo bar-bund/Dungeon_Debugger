@@ -200,7 +200,7 @@ namespace dungeon_debugger
         public Item? DropItem()
         {
             // List of items that an enemy can drop
-            List<Item> possibleItems = new()
+            Item[] possibleItems =
             {
                 new Vial(),
                 new Bandage(),
@@ -211,7 +211,7 @@ namespace dungeon_debugger
             if (random.Next(2) == 0)
             {
                 // Selects a random item from the list
-                Item droppedItem = possibleItems[random.Next(possibleItems.Count)];
+                Item droppedItem = possibleItems[random.Next(possibleItems.Length)];
                 Console.WriteLine($"The {Name} dropped a {droppedItem.Name}!");
                 return droppedItem;
             }

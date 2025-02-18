@@ -24,12 +24,17 @@ namespace dungeon_debugger
 
         public Enemy GenerateRandomEnemy()
         {
-            return random.Next(3) switch
+            switch (random.Next(3))
             {
-                0 => new Bug(),
-                1 => new Serpent(),
-                _ => new Ogre()
-            };
+                case 0:
+                    return new Bug();
+
+                case 1:
+                    return new Serpent();
+
+                default:
+                    return new Ogre();
+            }
         }
 
 
