@@ -1,4 +1,4 @@
 # dungeon_debugger
 
-School Project - Finals
-Basic Coding - C#
+# School Project - Finals
+# Basic Coding - C#
