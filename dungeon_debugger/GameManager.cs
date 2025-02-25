@@ -12,10 +12,14 @@ namespace dungeon_debugger
         private static GameManager? _instance; // Holds the single instance of GameManager
         public static GameManager Instance => _instance ??= new GameManager(); // Ensures only one instance exists
 
+
+        // Declares instances of other managers required for the game: Map, Battle, and UI
         private readonly MapManager mapManager;
         private readonly BattleManager battleManager;
         private readonly UIManager uiManager;
 
+
+        // Initialize the different managers
         private GameManager()
         {
             mapManager = new MapManager();
@@ -23,23 +27,21 @@ namespace dungeon_debugger
             uiManager = new UIManager();
         }
 
-        public Player CurrentPlayer { get; private set; }
-        private int PlayerPosition { get; set; } = 5;
-        private const int MapSize = 10;
-        private readonly Random random = new();
+
+        // Current player in the game
+        public Player CurrentPlayer { get; set; }
 
 
         // Starts the game and initializes the player
         public void StartGame()
         {
-            Art.DisplayIntro();
+            uiManager.ShowGameTitle();
 
-            // Player info and welcome message
+            // Prompt user for player name and initialize the player with it
             string playerName = uiManager.GetPlayerName();
-            CurrentPlayer = new Player(playerName);
+            CurrentPlayer = new Player(playerName); // Create a new player object
 
             uiManager.ShowWelcomeMessage(CurrentPlayer.Name);
-            Art.DisplayPlayer();
 
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
@@ -53,13 +55,15 @@ namespace dungeon_debugger
         private void GameLoop()
         {
             bool isRunning = true;
+
+            // Loop continues until player dies or chooses to quit
             while (isRunning && CurrentPlayer.Health > 0)
             {
                 Console.Clear();
                 mapManager.PrintMap();
 
-                uiManager.ShowPlayerStats(CurrentPlayer.Health);
-                int choice = uiManager.GetPlayerChoice();
+                uiManager.ShowPlayerStats(CurrentPlayer.Health, CurrentPlayer.Attack()); // Display player stats (health, attack)
+                int choice = uiManager.GetPlayerChoice(); // Get player's choice of action
 
                 switch (choice)
                 {
@@ -77,16 +81,16 @@ namespace dungeon_debugger
                         break;
 
                     default:
-                        uiManager.ShowInvalidChoice();
+                        uiManager.ShowInvalidChoice(); // Display an error message if the choice is invalid
                         break;
                 }
             }
 
+            // Game over if player health reaches zero
             if (CurrentPlayer.Health <= 0)
             {
                 Console.Clear();
-                Art.DisplayDefeat();
-                Console.WriteLine("\nYou have perished on your journey. Game over...");
+                uiManager.ShowDefeatMesseage();
                 Console.WriteLine("\nPress 'Enter' to end the game...");
                 Console.ReadLine();
                 isRunning = false; // Exit game loop
@@ -97,17 +101,19 @@ namespace dungeon_debugger
         // Handle movement and determines encounter
         private void HandleEncounter(int direction)
         {
-            // Pass direction to MovePlayer() method to update map
+            // Pass direction to MovePlayer() method to update map based on direction
             mapManager.MovePlayer(direction);
 
+            // Check if a battle should start (75% chance)
             if (battleManager.ShouldStartBattle())
             {
+                // Generate a random enemy and start the battle
                 Enemy enemy = battleManager.GenerateRandomEnemy();
-                uiManager.ShowEnemyEncounter(enemy);
                 battleManager.StartBattle(CurrentPlayer, enemy);
             }
             else
             {
+                // If no battle, show a message for resting by a bonfire and restore player health
                 uiManager.ShowBonfireRest();
                 CurrentPlayer.Rest();
             }

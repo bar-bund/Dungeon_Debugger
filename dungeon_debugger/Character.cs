@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 
 namespace dungeon_debugger
 {
@@ -6,14 +7,19 @@ namespace dungeon_debugger
     // Character
     public abstract class Character
     {
-        public string Name { get; set; }
-        public int Health { get; set; }
+        public string Name { get; set; } // Character name
+        public int Health { get; set; } // Character health
+        
+        public virtual int Attack() => 1000000; // Default attack (overridden in subclasses)
 
         public Character(string name, int health)
         {
             Name = name;
             Health = health;
         }
+
+        // Shared RNG instance for randomness in attacks, drops, etc.
+        protected static readonly Random random = new Random();
     }
 
 
@@ -21,128 +27,171 @@ namespace dungeon_debugger
     // Player : Character
     public class Player : Character
     {
-        // Constructor: Initializes player with a name and 100 health
-        public Player(string name) : base(name, 100) { }
+        private const int playerHealth = 100; // Max player health
+        private int playerAttackDamage = 25; // Default attack damage
 
-        // Fixed base damage
-        public int Attack() => 25;
+        // Additional stats for power-ups
+        public int bonusAttack { get; set; } = 0;
+
+        private readonly List<Item> inventory = new(); // Player's inventory
 
 
-        // FINAL
-        // Method to rest at a bonfire and heal the player
+        // Constructor: Initializes player
+        public Player(string name) : base(name, name.ToLower() == "god" ? 1000 : playerHealth)
+        {
+            // Enables god mode if the player's name is "god"
+            if (name.ToLower() == "god")
+            {
+                Console.WriteLine("\nYou have unlocked GOD MODE!");
+                playerAttackDamage = 1000;
+
+                // Add 10 of each item to inventory
+                for (int i = 0; i < 10; i++)
+                {
+                    inventory.Add(new Vial());
+                    inventory.Add(new Bandage());
+                }
+
+                Console.WriteLine("You received 10 of each item!");
+            }
+
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
+        }
+
+
+        // Override Attack() method to include bonus attack damage
+        public override int Attack() => playerAttackDamage + bonusAttack;
+
+
+        // Rest at a bonfire to regain health
         public void Rest()
         {
-            int healAmount = 50; // Amount of health restored
-            Health = Math.Min(Health + healAmount, 100); // Prevent overhealing
-            Art.DisplayBonfire();
+            const int healAmount = 50; // Amount of health restored
+            Health = Health + healAmount;
             Console.WriteLine($"You rest at the bonfire and recover {healAmount} health. Current health: {Health}.");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
 
 
-        // Item list
-        private List<Item> Inventory { get; } = new List<Item>();
-
-
-        // FINAL
-        // Method to add an item to the player's inventory
+        // Adds an item to the player's inventory
         public void AddToInventory(Item item)
         {
-            Inventory.Add(item); // Adds item to inventory
-            Console.WriteLine($"{item.Name} has been added to your inventory.");
+            inventory.Add(item);
+            Console.WriteLine($"\n{item.Name} has been added to your inventory.");
         }
 
 
-        // FINAL
-        // Method to display the player's inventory
-        public void ViewInventory()
+        // Uses an item from the inventory and displays full inventory
+        public void UseItem()
         {
-            Console.WriteLine("\nYour Inventory:");
-
-            if (Inventory.Count == 0)
+            if (inventory.Count == 0)
             {
-                Console.WriteLine("- Empty");
+                Console.WriteLine("\nYour inventory is empty.");
+                Thread.Sleep(1000);
                 return;
             }
 
-            foreach (var item in Inventory)
+            // Count unique item
+            Dictionary<string, int> itemCounts = new();
+            List<Item> uniqueItems = new();
+
+            foreach (var item in inventory)
             {
-                Console.WriteLine($"- {item.Name}");
+                if (itemCounts.ContainsKey(item.Name))
+                {
+                    itemCounts[item.Name]++;
+                }
+                else
+                {
+                    itemCounts[item.Name] = 1;
+                    uniqueItems.Add(item);
+                }
             }
-        }
 
+            // Display inventory
+            Console.WriteLine("\nSelect an item to use:");
+            for (int i = 0; i < uniqueItems.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}: {uniqueItems[i].Name} x{itemCounts[uniqueItems[i].Name]}");
+            }
 
-        // Method to use an item in inventory
-        public void UseItem()
-        {
+            // Get player choice
+            if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= uniqueItems.Count)
+            {
+                Item selectedItem = uniqueItems[choice - 1];
 
+                // Use item and remove one instance of it
+                selectedItem.Use(this);
+                inventory.Remove(inventory.First(i => i.Name == selectedItem.Name)); // Remove one instance
+
+                Console.WriteLine($"{selectedItem.Name} used!");
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection.");
+            }
         }
     }
 
 
-    // Sub class
-    // Enemy : Character
+    // Enemy base class
     public abstract class Enemy : Character
     {
-        public EnemyType Type { get; private set; }
+        public EnemyType Type { get; set; }
+        public enum EnemyType { Bug, Serpent, Ogre }
 
         public Enemy(EnemyType type, string name, int health) : base(name, health)
         {
             Type = type;
-            DisplayEnemyArt(); // Call ASCII art when the enemy appears
+            DisplayEnemyArt(); // Display ASCII art on spawn
         }
 
-        public enum EnemyType { Bug, Serpent, Ogre }
 
-
-        //FINAL
         // Method displaying enemy art
-        private void DisplayEnemyArt()
+        public void DisplayEnemyArt()
         {
             switch (Type)
             {
-                case EnemyType.Bug:
-                    Art.DisplayBug();
+                case EnemyType.Bug: 
+                    Art.DisplayBug(); 
+                    break;
+                
+                case EnemyType.Serpent: 
+                    Art.DisplaySerpent(); 
+                    break;
+                
+                case EnemyType.Ogre: 
+                    Art.DisplayOgre(); 
                     break;
 
-                case EnemyType.Serpent:
-                    Art.DisplaySerpent();
-                    break;
-
-                case EnemyType.Ogre:
-                    Art.DisplayOgre();
-                    break;
-
-                default:
-                    Console.WriteLine("Unknown enemy appeared!");
+                default: 
+                    Console.WriteLine("Unknown enemy appeared!"); 
                     break;
             }
         }
 
 
-        // Virtual method so derived class can overwrite the value
-        public virtual int Attack()
-        {
-            return 10000; // Default attack value if non is overwritten
-        }
+        // Enforces each enemy class to define their attack logic
+        public abstract override int Attack();
 
 
         // Item drop method
-        protected static Random random = new Random();
-        public Item DropItem()
+        public Item? DropItem()
         {
-            // List of items that an enemy can drop
-            List<Item> possibleItems = new List<Item>
+            // Array of items that an enemy can drop
+            Item[] possibleItems =
             {
                 new Vial(),
-                new Bandage(),
-                new Shield()
+                new Bandage()
             };
 
             // 50% chance of dropping an item
             if (random.Next(2) == 0)
             {
                 // Selects a random item from the list
-                Item droppedItem = possibleItems[random.Next(possibleItems.Count)];
+                Item droppedItem = possibleItems[random.Next(possibleItems.Length)];
                 Console.WriteLine($"The {Name} dropped a {droppedItem.Name}!");
                 return droppedItem;
             }
@@ -152,77 +201,75 @@ namespace dungeon_debugger
     }
 
 
-    // Sub sub class
+    // Subclasses for different enemy types
     // Bug : Enemy
     public class Bug : Enemy
     {
         public Bug() : base(EnemyType.Bug, "Buggy Bug", 75) { }
 
+        private const int enemyAttackDamage = 15;
+
         // Attack method
         public override int Attack()
         {
-            int baseDamage;
-            int attackHitChance = random.Next(1, 5);
-            if (attackHitChance <= 2) // 50% hit chance
+            if (random.Next(4) == 1) // 50% hit chance on player
             {
-                baseDamage = 15;
+                Console.WriteLine("The enemy hit you!");
+                return enemyAttackDamage;
             }
             else
             {
-                baseDamage = 0;
                 Console.WriteLine("The enemy missed!");
+                return 0;
             }
-            return baseDamage;
         }
     }
 
 
-    // Sub sub class
     // Serpent : Enemy
     public class Serpent : Enemy
     {
         public Serpent() : base(EnemyType.Serpent, "Syntax Serpent", 100) { }
 
+        private const int enemyAttackDamage = 25;
+
         // Attack method
         public override int Attack()
         {
-            int baseDamage;
-            int attackHitChance = random.Next(1, 5);
-            if (attackHitChance <= 3) // 75% hit chance
+            if (random.Next(4) <= 2) // 75% hit chance on player
             {
-                baseDamage = 25;
+                Console.WriteLine("The enemy hit you!");
+                return enemyAttackDamage; 
             }
             else
             {
-                baseDamage = 0;
                 Console.WriteLine("The enemy missed!");
+                return 0;
             }
-            return baseDamage;
         }
     }
 
 
-    // Sub sub class
     // Ogre : Enemy
     public class Ogre : Enemy
     {
         public Ogre() : base(EnemyType.Ogre, "OutOfBounds Ogre", 150) { }
 
+        private const int enemyAttackDamage = 35;
+
         // Attack method
         public override int Attack()
         {
-            int baseDamage;
-            int attackHitChance = random.Next(1, 5);
-            if (attackHitChance <= 1) // 25% hit chance
+            if (random.Next(4) <= 0) // 25% hit chance on player
             {
-                baseDamage = 35;
+                Console.WriteLine("The enemy hit you!");
+                return enemyAttackDamage;
             }
             else
             {
-                baseDamage = 0;
                 Console.WriteLine("The enemy missed!");
+                return 0;
             }
-            return baseDamage;
         }
     }
 }

@@ -1,61 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dungeon_debugger
 {
-    // Item base class
+    // Base class for all items
     public abstract class Item
     {
-        public string? Name { get; set; }
+        public string Name { get; set; }
+
+        // Constructor to initialize the name of the item
+        protected Item(string name) 
+        { 
+            Name = name;
+        }
+
+        // Abstract method that forces derived classes to implement their own 'Use' method
         public abstract void Use(Player player);
     }
 
-    // Vial class
-    public class Vial : Item
-    {
-        public int DamageBoost { get; } = 5;
 
-        public Vial()
-        {
-            Name = "Vial";
-        }
-
-        public override void Use(Player player)
-        {
-            //player.Heal(HealAmount);
-            Console.WriteLine($"You used a {Name} and restored {HealAmount} health.");
-        }
-    }
-
-    // Bandage class
+    // Healing item - Bandage
     public class Bandage : Item
     {
-        public int HealAmount { get; } = 15;
+        // Constructor calling the base class with the name "Bandage"
+        public Bandage() : base("Bandage") { }
 
-        public Bandage()
+        // Override the Use method to implement specific behavior for the Bandage
+        public override void Use(Player player)
         {
-            //player.IncreaseDamage(DamageBoost);
-            Console.WriteLine($"You used a {Name} and gained {DamageBoost} extra damage for the next attack.");
+            int healAmount = 30;
+            player.Health = player.Health + healAmount;
+            Console.WriteLine($"\nYou used a {Name} and restored {healAmount} health.");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
     }
 
-    // Shield class
-    public class Shield : Item
+
+    // Damage-boosting item - Vial
+    public class Vial : Item
     {
-        public int TemporaryHealthBoost { get; } = 10;
+        // Constructor calling the base class with the name "Vial"
+        public Vial() : base("Damageboost Vial") { }
 
-        public Shield()
-        {
-            Name = "Shield";
-        }
-
+        // Override the Use method to implement specific behavior for the Vial
         public override void Use(Player player)
         {
-            //player.IncreaseTemporaryHealth(TemporaryHealthBoost);
-            Console.WriteLine($"You used a {Name} and gained {TemporaryHealthBoost} temporary health.");
+            int attackBoost = 10;
+            player.bonusAttack += attackBoost;
+            Console.WriteLine($"\nYou used a {Name} and gained {attackBoost} extra damage!");
+            Console.WriteLine("Press 'Enter' to continue...");
+            Console.ReadLine();
         }
     }
 }

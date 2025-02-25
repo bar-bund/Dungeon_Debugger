@@ -45,7 +45,7 @@ namespace dungeon_debugger
                               "         / |   \\_____\\  \r\n" +
                               "         `-'              \r\n");
         }
-
+        
         // Bug - Art
         public static void DisplayBug()
         {
@@ -164,24 +164,20 @@ namespace dungeon_debugger
                               "              ^^\\..___,.--`             \r\n");
         }
 
-
-        // Bandage - Art
-        public static void DisplayBandage()
+        // Abandon Journey - Art
+        public static void DisplayAbandon()
         {
-            Console.WriteLine();
+            Console.WriteLine("\n" +
+                              "            ^^                   @@@@@@@@@                                   \r\n" +
+                              "       ^^       ^^            @@@@@@@@@@@@@@@                                \r\n" +
+                              "                            @@@@@@@@@@@@@@@@@@              ^^               \r\n" +
+                              "                           @@@@@@@@@@@@@@@@@@@@                              \r\n" +
+                              " ~~~~ ~~ ~~~~~ ~~~~~~~~ ~~ &&&&&&&&&&&&&&&&&&&& ~~~~~~~ ~~~~~~~~~~~ ~~~      \r\n" +
+                              " ~         ~~   ~  ~       ~~~~~~~~~~~~~~~~~~~~ ~       ~~     ~~ ~          \r\n" +
+                              "   ~      ~~      ~~ ~~ ~~  ~~~~~~~~~~~~~ ~~~~  ~     ~~~    ~ ~~~  ~ ~~     \r\n" +
+                              "   ~  ~~     ~         ~      ~~~~~~  ~~ ~~~       ~~ ~ ~~  ~~ ~             \r\n" +
+                              " ~  ~       ~ ~      ~           ~~ ~~~~~~  ~      ~~  ~             ~~      \r\n" +
+                              "       ~             ~        ~      ~      ~~   ~             ~             \r\n");
         }
-
-        // Shield - Art
-        public static void DisplayShield()
-        {
-            Console.WriteLine();
-        }
-
-        // Vial - Art
-        public static void DisplayVial()
-        {
-            Console.WriteLine();
-        }
-
     }
 }
